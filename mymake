@@ -1,0 +1,15 @@
+🔐 To Change the Password:
+If you want to set a new password:
+
+Open your browser console (F12)
+Run this command:
+javascript
+
+Security.hashPassword('your_new_password').then(hash => console.log(hash));
+Copy the hash that appears
+Open 
+security-enhanced.js
+Find line 24 and replace the hash:
+javascript
+const ADMIN_PASSWORD_HASH = 'paste_your_hash_here';
+Note: With the new security features, you'll be locked out for 5 minutes after 5 failed login attempts, and your session will automatically expire after 30 minutes of inactivity! 🔒

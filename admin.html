@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lumina Admin Panel</title>
+
+    <!-- Security Headers -->
+    <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' https: data:; font-src 'self' https://fonts.gstatic.com; connect-src 'self';">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="X-Frame-Options" content="DENY">
+    <meta http-equiv="X-XSS-Protection" content="1; mode=block">
+    <meta name="referrer" content="no-referrer">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+
+<body style="padding-top: 80px;">
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">Lumina<span class="logo-accent">.</span> Admin</a>
+            <div class="nav-links">
+                <a href="index.html">View Store</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Login Modal -->
+    <div id="login-modal"
+        style="display: flex; position: fixed; top: 0; left: 0; width: 100%; height: 100vh; background: var(--bg-color); z-index: 1000; align-items: center; justify-content: center;">
+        <div
+            style="max-width: 450px; width: 100%; margin: 0 auto; text-align: center; background: var(--card-bg); padding: 3rem; border-radius: 16px; border: 1px solid var(--border); box-shadow: var(--shadow-lg);">
+            <div
+                style="width: 80px; height: 80px; margin: 0 auto 1.5rem; background: var(--gradient-primary); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                    <path d="M12 2L2 7L12 12L22 7L12 2Z" />
+                    <path d="M2 17L12 22L22 17" />
+                    <path d="M2 12L12 17L22 12" />
+                </svg>
+            </div>
+            <h2 style="font-size: 2rem; margin-bottom: 0.5rem;">Admin Login</h2>
+            <p style="color: var(--text-muted); margin-bottom: 2rem;">Enter your credentials to access the admin panel
+            </p>
+            <input type="password" id="admin-password" placeholder="Enter password"
+                style="width: 100%; padding: 1rem 1.5rem; background: var(--bg-color); border: 2px solid var(--border); border-radius: 12px; color: var(--text-main); font-family: Outfit; font-size: 1rem; margin-bottom: 1.5rem; text-align: center; transition: all 0.3s ease;"
+                onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'">
+            <button onclick="handleLogin()"
+                style="width: 100%; padding: 1rem 1.5rem; background: var(--gradient-primary); color: white; border: none; border-radius: 12px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease; box-shadow: var(--shadow-md);"
+                onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='var(--shadow-glow)'"
+                onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='var(--shadow-md)'">
+                Login to Admin Panel
+            </button>
+            <p style="margin-top: 1.5rem; font-size: 0.9rem; color: var(--text-muted);">
+                Default password: <code
+                    style="background: rgba(139, 92, 246, 0.1); padding: 0.25rem 0.5rem; border-radius: 4px; color: var(--accent); font-family: monospace;">admin123</code>
+            </p>
+        </div>
+    </div>
+
+    <!-- Admin Panel -->
+    <div id="admin-main"
+        style="display: none; max-width: 1400px; margin: 0 auto; padding: 2rem; grid-template-columns: 250px 1fr; gap: 2rem;">
+        <!-- Sidebar -->
+        <aside
+            style="background: var(--card-bg); padding: 1.5rem; border-radius: 16px; border: 1px solid var(--border); height: fit-content; position: sticky; top: 100px;">
+            <div style="margin-bottom: 2rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--border);">
+                <h3
+                    style="font-size: 0.85rem; text-transform: uppercase; color: var(--text-muted); letter-spacing: 1px; margin-bottom: 1rem;">
+                    Navigation</h3>
+            </div>
+            <button class="admin-nav-btn active" onclick="switchTab('books')"
+                style="display: block; width: 100%; text-align: left; padding: 1rem 1.25rem; background: rgba(139, 92, 246, 0.1); border: none; color: var(--accent); cursor: pointer; border-radius: 10px; margin-bottom: 0.75rem; font-weight: 600; font-size: 0.95rem; transition: all 0.3s ease;">
+                📚 Manage Books
+            </button>
+            <button class="admin-nav-btn" onclick="switchTab('orders')"
+                style="display: block; width: 100%; text-align: left; padding: 1rem 1.25rem; background: none; border: none; color: var(--text-muted); cursor: pointer; border-radius: 10px; margin-bottom: 0.75rem; font-weight: 600; font-size: 0.95rem; transition: all 0.3s ease;">
+                📦 Orders
+            </button>
+            <div style="margin: 2rem 0; border-top: 1px solid var(--border);"></div>
+            <button onclick="logout()"
+                style="display: block; width: 100%; text-align: left; padding: 1rem 1.25rem; background: rgba(239, 68, 68, 0.1); border: none; color: var(--error); cursor: pointer; border-radius: 10px; font-weight: 600; font-size: 0.95rem; transition: all 0.3s ease;">
+                🚪 Logout
+            </button>
+        </aside>
+
+        <!-- Main Content -->
+        <main
+            style="background: var(--card-bg); padding: 2rem; border-radius: 16px; border: 1px solid var(--border); min-height: 600px;">
+            <!-- Books Tab -->
+            <div id="books-tab" class="tab-content active">
+                <div
+                    style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--border);">
+                    <div>
+                        <h2 style="font-size: 1.75rem; margin-bottom: 0.25rem;">Book Inventory</h2>
+                        <p style="color: var(--text-muted); font-size: 0.9rem;">Manage your book collection</p>
+                    </div>
+                    <button class="btn btn-primary" onclick="openBookForm()"
+                        style="padding: 0.75rem 1.5rem; display: flex; align-items: center; gap: 0.5rem;">
+                        <span style="font-size: 1.2rem;">+</span> Add New Book
+                    </button>
+                </div>
+                <div style="overflow-x: auto;">
+                    <table style="width: 100%; border-collapse: collapse;">
+                        <thead>
+                            <tr style="text-align: left; border-bottom: 2px solid var(--border);">
+                                <th
+                                    style="padding: 1rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.5px;">
+                                    Title</th>
+                                <th
+                                    style="padding: 1rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.5px;">
+                                    Author</th>
+                                <th
+                                    style="padding: 1rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.5px;">
+                                    Price</th>
+                                <th
+                                    style="padding: 1rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.5px;">
+                                    Discount</th>
+                                <th
+                                    style="padding: 1rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.5px;">
+                                    Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="books-table-body"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Orders Tab -->
+            <div id="orders-tab" class="tab-content" style="display: none;">
+                <div style="margin-bottom: 2rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--border);">
+                    <h2 style="font-size: 1.75rem; margin-bottom: 0.25rem;">Customer Orders</h2>
+                    <p style="color: var(--text-muted); font-size: 0.9rem;">View and manage all orders</p>
+                </div>
+                <div style="overflow-x: auto;">
+                    <table style="width: 100%; border-collapse: collapse;">
+                        <thead>
+                            <tr style="text-align: left; border-bottom: 2px solid var(--border);">
+                                <th
+                                    style="padding: 1rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.5px;">
+                                    Order ID</th>
+                                <th
+                                    style="padding: 1rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.5px;">
+                                    Customer</th>
+                                <th
+                                    style="padding: 1rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.5px;">
+                                    Items</th>
+                                <th
+                                    style="padding: 1rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.5px;">
+                                    Total</th>
+                                <th
+                                    style="padding: 1rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.5px;">
+                                    Date</th>
+                                <th
+                                    style="padding: 1rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.5px;">
+                                    Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="orders-table-body"></tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Book Modal -->
+    <div id="admin-book-modal" class="modal">
+        <div class="modal-content" style="max-width: 900px;">
+            <button class="close-modal" onclick="closeBookForm()">&times;</button>
+            <div style="padding: 2rem;">
+                <h2 id="modal-form-title" style="font-size: 1.75rem; margin-bottom: 2rem;">Add New Book</h2>
+                <form id="book-form">
+                    <input type="hidden" id="book-id">
+                    <div class="form-group">
+                        <label>Book Title</label>
+                        <input type="text" id="book-title" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Author Name</label>
+                        <input type="text" id="book-author" required>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem;">
+                        <div class="form-group">
+                            <label>Price ($)</label>
+                            <input type="number" id="book-price" step="0.01" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Discount (%)</label>
+                            <input type="number" id="book-discount" min="0" max="100" value="0">
+                        </div>
+                        <div class="form-group">
+                            <label>Category</label>
+                            <select id="book-category"
+                                style="width: 100%; padding: 0.75rem; background: var(--bg-color); border: 1px solid var(--border); border-radius: 8px; color: var(--text-main);">
+                                <option value="fiction">Fiction</option>
+                                <option value="non-fiction">Non-Fiction</option>
+                                <option value="poetry">Poetry</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Description</label>
+                        <textarea id="book-desc" rows="4"
+                            style="width: 100%; padding: 0.75rem; background: var(--bg-color); border: 1px solid var(--border); border-radius: 8px; color: var(--text-main); font-family: Outfit; resize: vertical;"
+                            required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Media URLs (Images/Videos)</label>
+                        <div id="media-inputs"></div>
+                        <button type="button" class="btn"
+                            style="font-size: 0.9rem; padding: 0.5rem 1rem; margin-top: 0.75rem; background: rgba(139, 92, 246, 0.1); color: var(--accent);"
+                            onclick="addMediaInput()">+ Add More Media</button>
+                    </div>
+                    <button type="submit" class="btn btn-primary full-width"
+                        style="padding: 1rem; font-size: 1rem; margin-top: 1rem;">Save Book</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts - Load security module first! -->
+    <script src="utils.js"></script>
+    <script src="security-enhanced.js"></script>
+    <script src="app.js"></script>
+    <script src="admin.js"></script>
+    <script src="pwa-installer.js"></script>
+</body>
+
+</html>

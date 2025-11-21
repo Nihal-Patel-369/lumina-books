@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Login Test</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: #1a1a2e;
+            color: white;
+            font-family: Arial;
+        }
+
+        .login-box {
+            background: #16213e;
+            padding: 40px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        input {
+            padding: 10px;
+            margin: 10px 0;
+            width: 200px;
+            border-radius: 5px;
+            border: none;
+        }
+
+        button {
+            padding: 10px 30px;
+            background: #8b5cf6;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background: #7c3aed;
+        }
+
+        #result {
+            margin-top: 20px;
+            color: #22c55e;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="login-box">
+        <h1>Login Test</h1>
+        <p>Enter: admin123</p>
+        <input type="password" id="password" placeholder="Password">
+        <br>
+        <button id="loginBtn">LOGIN</button>
+        <div id="result"></div>
+    </div>
+
+    <script>
+        console.log('Script loaded');
+
+        const btn = document.getElementById('loginBtn');
+        const pwd = document.getElementById('password');
+        const result = document.getElementById('result');
+
+        console.log('Button:', btn);
+        console.log('Password field:', pwd);
+
+        btn.onclick = function () {
+            console.log('BUTTON CLICKED!');
+            const password = pwd.value;
+            console.log('Password:', password);
+
+            if (password === 'admin123') {
+                result.textContent = '✓ LOGIN SUCCESS!';
+                result.style.color = '#22c55e';
+                alert('Login successful!');
+            } else {
+                result.textContent = '✗ Wrong password';
+                result.style.color = '#ef4444';
+            }
+        };
+
+        pwd.addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                btn.click();
+            }
+        });
+
+        console.log('Event listener attached');
+    </script>
+</body>
+
+</html>
